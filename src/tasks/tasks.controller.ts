@@ -32,7 +32,7 @@ import { TaskStatus } from './entities/task.entity';
 @ApiBearerAuth('JWT-auth')
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) {}
+  constructor(private readonly tasksService: TasksService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -40,8 +40,8 @@ export class TasksController {
   @ApiResponse({ status: 201, description: 'Task created successfully' })
   @ApiResponse({ status: 400, description: 'Validation error' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  create(@Body() createTaskDto: CreateTaskDto) {
-    return this.tasksService.create(createTaskDto);
+  async create(@Body() createTaskDto: CreateTaskDto) {
+    return await this.tasksService.create(createTaskDto);
   }
 
   @Get()
@@ -54,9 +54,9 @@ export class TasksController {
   })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
   @ApiQuery({ name: 'offset', required: false, type: Number, example: 0 })
-  @ApiResponse({ status: 200, description: 'List of tasks returned' })
-  findAll(@Query() filterDto: FilterTaskDto) {
-    return this.tasksService.findAll(filterDto);
+  @ApiResponse({ status: 200, description: 'List of tasks return await ed' })
+  async findAll(@Query() filterDto: FilterTaskDto) {
+    return await this.tasksService.findAll(filterDto);
   }
 
   @Get(':id')
@@ -64,8 +64,8 @@ export class TasksController {
   @ApiParam({ name: 'id', description: 'UUID of the task' })
   @ApiResponse({ status: 200, description: 'Task found' })
   @ApiResponse({ status: 404, description: 'Task not found' })
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.tasksService.findOne(id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.tasksService.findOne(id);
   }
 
   @Patch(':id')
@@ -73,11 +73,11 @@ export class TasksController {
   @ApiParam({ name: 'id', description: 'UUID of the task' })
   @ApiResponse({ status: 200, description: 'Task updated successfully' })
   @ApiResponse({ status: 404, description: 'Task not found' })
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTaskDto: UpdateTaskDto,
   ) {
-    return this.tasksService.update(id, updateTaskDto);
+    return await this.tasksService.update(id, updateTaskDto);
   }
 
   @Delete(':id')
@@ -85,8 +85,8 @@ export class TasksController {
   @ApiParam({ name: 'id', description: 'UUID of the task' })
   @ApiResponse({ status: 200, description: 'Task soft-deleted' })
   @ApiResponse({ status: 404, description: 'Task not found' })
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.tasksService.softDelete(id);
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.tasksService.softDelete(id);
   }
 
   @Post(':id/restore')
@@ -94,7 +94,7 @@ export class TasksController {
   @ApiParam({ name: 'id', description: 'UUID of the soft-deleted task' })
   @ApiResponse({ status: 200, description: 'Task restored' })
   @ApiResponse({ status: 404, description: 'No deleted task found with this ID' })
-  restore(@Param('id', ParseUUIDPipe) id: string) {
-    return this.tasksService.restore(id);
+  async restore(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.tasksService.restore(id);
   }
 }

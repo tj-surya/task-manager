@@ -26,7 +26,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -34,8 +34,8 @@ export class UsersController {
   @ApiResponse({ status: 201, description: 'User created successfully' })
   @ApiResponse({ status: 400, description: 'Validation error' })
   @ApiResponse({ status: 409, description: 'Email already exists' })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    return await this.usersService.create(createUserDto);
   }
 
   @Get()
@@ -44,9 +44,9 @@ export class UsersController {
   @ApiOperation({ summary: 'Get all users with pagination' })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
   @ApiQuery({ name: 'offset', required: false, type: Number, example: 0 })
-  @ApiResponse({ status: 200, description: 'List of users returned' })
-  findAll(@Query() pagination: PaginationDto) {
-    return this.usersService.findAll(pagination);
+  @ApiResponse({ status: 200, description: 'List of users return await ed' })
+  async findAll(@Query() pagination: PaginationDto) {
+    return await this.usersService.findAll(pagination);
   }
 
   @Get(':id')
@@ -56,8 +56,8 @@ export class UsersController {
   @ApiParam({ name: 'id', description: 'UUID of the user' })
   @ApiResponse({ status: 200, description: 'User found' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.findOne(id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.usersService.findOne(id);
   }
 
   @Get(':id/tasks')
@@ -67,12 +67,12 @@ export class UsersController {
   @ApiParam({ name: 'id', description: 'UUID of the user' })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
   @ApiQuery({ name: 'offset', required: false, type: Number, example: 0 })
-  @ApiResponse({ status: 200, description: 'User tasks returned' })
+  @ApiResponse({ status: 200, description: 'User tasks return await ed' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  getUserTasks(
+  async getUserTasks(
     @Param('id', ParseUUIDPipe) id: string,
     @Query() pagination: PaginationDto,
   ) {
-    return this.usersService.getUserTasks(id, pagination);
+    return await this.usersService.getUserTasks(id, pagination);
   }
 }
